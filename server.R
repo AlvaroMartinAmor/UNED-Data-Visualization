@@ -6,6 +6,8 @@
 #
 #    http://shiny.rstudio.com/
 #
+rsconnect::setAccountInfo(name='alvaro-martin', token='x', secret="secret")
+
 
 list.of.packages <- c("rsconnect" ,"tidyverse","ggplot2", "shiny", "data.table", "DT", "readr", "ggeasy", "RCurl")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
@@ -20,13 +22,11 @@ library(readr)
 library(ggeasy)
 library(rsconnect)
 library(ggplot2)
+library(packrat)
 
 # 1. Importacion datos
-
 ruta <- "https://raw.githubusercontent.com/AlvaroMartinAmor/UNED-Data-Visualization-shiny/main/stats.csv"
 stats <- read.csv(ruta)
-
-stats
 
 #   2.A stats dataset 
 stats_b <- stats %>%
@@ -39,10 +39,8 @@ stats_b <- stats %>%
     mutate(diff_goals = (goals-goals_conceded))
 
 
-str(stats_b) 
-
 #Creacion variables
-stats <- stats_b[2:length(stats_b)]
+stats_c <- as.data.table(stats_b)
 
 winners_table<- stats_c[, .SD[which.max(points)],
                         by = .(Season_YearStart),
@@ -52,6 +50,7 @@ team1 <- unique(stats_b$team)
 
 nums <- sapply(stats_b, is.numeric)
 numericas <- names(stats_b[nums])
+
 
 # --------SHINY-------
 
