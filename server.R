@@ -7,10 +7,11 @@
 #    http://shiny.rstudio.com/
 #
 
-list.of.packages <- c("rsconnect" ,"tidyverse","ggplot2", "shiny", "data.table", "DT", "readr", "ggeasy")
+list.of.packages <- c("rsconnect" ,"tidyverse","ggplot2", "shiny", "data.table", "DT", "readr", "ggeasy", "RCurl")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
 
+library(RCurl)
 library(shiny)
 library(tidyverse)
 library(data.table)
@@ -21,11 +22,15 @@ library(rsconnect)
 library(ggplot2)
 
 # 1. Importacion datos
-stats <- read.csv2("C:/Users/alvar/Desktop/UNED/8. Visualizacion Avanzada R/Trabajo modulo/Premier_League/stats.csv", sep = ",")
+
+ruta <- "https://raw.githubusercontent.com/AlvaroMartinAmor/UNED-Data-Visualization-shiny/main/stats.csv"
+stats <- read.csv(ruta)
+
+stats
 
 #   2.A stats dataset 
 stats_b <- stats %>%
-    separate(season, c("Season_YearStart", "Season_YearEnd"), sep = "-") %>%
+    separate("season", c("Season_YearStart", "Season_YearEnd"), sep = "-") %>%
     group_by(team) %>%
     mutate_if(is.character,as.numeric) %>%
     ungroup() %>%
